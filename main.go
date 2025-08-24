@@ -14,6 +14,11 @@ import (
 const targetURL = "http://3.82.251.214:8688/service/EchoService"
 
 func main() {
+	// Paths to your TLS certificate and key files.
+	// You will need to replace these with the actual paths on your system.
+	const certFile = "cert.pem"
+	const keyFile = "key.pem"
+
 	// Parse the target URL.
 	remote, err := url.Parse(targetURL)
 	if err != nil {
@@ -51,10 +56,10 @@ func main() {
 		proxy.ServeHTTP(w, r)
 	})
 
-	// Start the HTTP server.
-	// We'll use log.Fatal to handle any errors from ListenAndServe.
-	log.Println("Starting passthrough service on :9090")
-	if err := http.ListenAndServe(":8688", nil); err != nil {
+	// Start the HTTPS server.
+	// We'll use log.Fatal to handle any errors from ListenAndServeTLS.
+	log.Println("Starting passthrough service with HTTPS on :8688")
+	if err := http.ListenAndServeTLS(":8688", certFile, keyFile, nil); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
 }
